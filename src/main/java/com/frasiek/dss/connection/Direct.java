@@ -10,6 +10,7 @@ import com.frasiek.dss.DBStructureChanges;
 import java.io.Serializable;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Objects;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -77,5 +78,41 @@ public class Direct implements Connection, Serializable {
     public void setNewStructure(DBStructureChanges dbChanges) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 83 * hash + Objects.hashCode(this.host);
+        hash = 83 * hash + Objects.hashCode(this.username);
+        hash = 83 * hash + Objects.hashCode(this.password);
+        hash = 83 * hash + Objects.hashCode(this.port);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Direct other = (Direct) obj;
+        if (!Objects.equals(this.host, other.host)) {
+            return false;
+        }
+        if (!Objects.equals(this.username, other.username)) {
+            return false;
+        }
+        if (!Objects.equals(this.password, other.password)) {
+            return false;
+        }
+        if (!Objects.equals(this.port, other.port)) {
+            return false;
+        }
+        return true;
+    }
+    
+    
 
 }

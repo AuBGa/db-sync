@@ -16,6 +16,7 @@ import java.io.ObjectOutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,6 +67,10 @@ public class Store {
 
     public void removeConnection(Connection c) {
         this.connections.remove(c);
+    }
+    
+    public Set<Connection> getStoredConnections(){
+        return this.connections;
     }
 
     public void saveStoredData() throws StoreException {

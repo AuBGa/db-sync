@@ -8,6 +8,7 @@ package com.frasiek.dss.connection;
 import com.frasiek.dss.DBStructure;
 import com.frasiek.dss.DBStructureChanges;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  *
@@ -48,5 +49,41 @@ public class PhpProxy implements Connection, Serializable {
     public void setNewStructure(DBStructureChanges dbChanges) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 79 * hash + Objects.hashCode(this.host);
+        hash = 79 * hash + Objects.hashCode(this.username);
+        hash = 79 * hash + Objects.hashCode(this.password);
+        hash = 79 * hash + Objects.hashCode(this.port);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final PhpProxy other = (PhpProxy) obj;
+        if (!Objects.equals(this.host, other.host)) {
+            return false;
+        }
+        if (!Objects.equals(this.username, other.username)) {
+            return false;
+        }
+        if (!Objects.equals(this.password, other.password)) {
+            return false;
+        }
+        if (!Objects.equals(this.port, other.port)) {
+            return false;
+        }
+        return true;
+    }
+    
+    
 
 }
