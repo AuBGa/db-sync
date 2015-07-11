@@ -11,6 +11,7 @@ import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Toolkit;
 import java.util.logging.Level;
+import javax.swing.JOptionPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -291,10 +292,16 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_AddNewConnectionActionPerformed
 
     private void TestConnectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TestConnectionActionPerformed
+         
         try {
             Connection c = Manager.getConnection(String.valueOf(Type.getSelectedItem()), Host.getText(), Port.getText(), Login.getText(), String.valueOf(Password.getPassword()));
+            if(c.isConnectionOK() == false){
+                throw new ConnectionException("Nie można podłączyć się do bazy danych");
+            }
+            JOptionPane.showMessageDialog(this, "Udało podłączyć się do bazy danych.");
         } catch (ConnectionException ex) {
             LoggerFactory.getLogger(Main.class).error(ex.getMessage());
+            JOptionPane.showMessageDialog(this, "Podane parametry nie są poprawne.");
         }   
     }//GEN-LAST:event_TestConnectionActionPerformed
 
