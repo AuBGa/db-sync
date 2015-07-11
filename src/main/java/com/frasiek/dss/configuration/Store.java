@@ -6,6 +6,8 @@
 package com.frasiek.dss.configuration;
 
 import com.frasiek.dss.connection.Connection;
+import com.frasiek.dss.connection.Direct;
+import com.frasiek.dss.connection.PhpProxy;
 import java.io.EOFException;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -17,6 +19,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
+import javax.swing.ComboBoxModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,15 +51,19 @@ public class Store {
         String location = getStoredDataLocation();
         try (FileInputStream saveFile = new FileInputStream(location);
                 ObjectInputStream save = new ObjectInputStream(saveFile);) {
-            Object saved = null;
-            while ((saved = save.readObject()) != null) {
-                this.connections.add((Connection) saved);
+            Object c = null;
+            while ((c = save.readObject()) != null) {
+                if (c instanceof Direct) {
+                    this.connections.add((Direct) c);
+                } else if (c instanceof PhpProxy) {
+                    this.connections.add((PhpProxy) c);
+                }
             }
-        } catch (EOFException | FileNotFoundException ex){
-            logger.error(ex.getMessage());
+        } catch (EOFException | FileNotFoundException ex) {
+            logger.error(ex.toString());
             //nic nie rob nie ma pliku nie ma co wczytywac
         } catch (IOException | ClassNotFoundException ex) {
-            logger.error(ex.getMessage());
+            logger.error(ex.toString());
             throw new StoreException(ex);
         }
     }
@@ -68,23 +75,25 @@ public class Store {
     public void removeConnection(Connection c) {
         this.connections.remove(c);
     }
-    
-    public Set<Connection> getStoredConnections(){
+
+    public Set<Connection> getStoredConnections() {
         return this.connections;
     }
 
     public void saveStoredData() throws StoreException {
         String location = getStoredDataLocation();
+        logger.trace("Saving connections (" + String.valueOf(this.connections.size()) + ")");
         try (FileOutputStream saveFile = new FileOutputStream(location);
                 ObjectOutputStream save = new ObjectOutputStream(saveFile);) {
             for (Connection c : this.connections) {
+                logger.trace("Saving connection " + c.toString());
                 save.writeObject(c);
             }
         } catch (FileNotFoundException ex) {
-            logger.error(ex.getMessage());
+            logger.error(ex.toString());
             throw new StoreException(ex);
         } catch (IOException ex) {
-            logger.error(ex.getMessage());
+            logger.error(ex.toString());
             throw new StoreException(ex);
         }
     }
@@ -95,7 +104,7 @@ public class Store {
             try {
                 storeUrl = new URL(getClass().getProtectionDomain().getCodeSource().getLocation() + "store.data");
             } catch (MalformedURLException ex) {
-                logger.equals(ex.getMessage());
+                logger.equals(ex.toString());
             }
         }
         String dataPath = storeUrl.getPath();
@@ -119,5 +128,5 @@ public class Store {
         }
         return true;
     }
-
+    
 }

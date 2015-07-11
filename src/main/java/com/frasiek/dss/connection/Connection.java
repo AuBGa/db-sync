@@ -13,12 +13,23 @@ import java.io.Serializable;
  *
  * @author frasiek
  */
-public interface Connection  {
-    
+public interface Connection {
+
     public Boolean isConnectionOK();
-    
+
     public DBStructure getStructure();
-    
+
     public void setNewStructure(DBStructureChanges dbChanges);
-    
+
+    @Override
+    public String toString();
+
+    public String getHost();
+
+    public String getUsername();
+
+    public String getPassword();
+
+    public Integer getPort();
+
 }

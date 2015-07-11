@@ -5,6 +5,8 @@
  */
 package com.frasiek.dss;
 
+import com.frasiek.dss.configuration.Store;
+import com.frasiek.dss.configuration.StoreException;
 import com.frasiek.dss.connection.Connection;
 import com.frasiek.dss.connection.ConnectionException;
 import com.frasiek.dss.connection.Manager;
@@ -19,12 +21,31 @@ import org.slf4j.LoggerFactory;
  */
 public class Main extends javax.swing.JFrame {
 
+    private Store connectionStore;
+    private org.slf4j.Logger logger = null;
+
     /**
      * Creates new form Main
      */
     public Main() {
+        logger = LoggerFactory.getLogger(Main.class);
+        try {
+            connectionStore = Store.getInstance();
+        } catch (StoreException ex) {
+            logger.debug(ex.toString());
+        }
         initComponents();
+        setComboConnections();
         centeredFrame(this);
+    }
+
+    private void setComboConnections() {
+        SourceConnection.removeAllItems();
+        DestinationConnection.removeAllItems();
+        for (Connection c : connectionStore.getStoredConnections()) {
+            SourceConnection.addItem(c);
+            DestinationConnection.addItem(c);
+        }
     }
 
     /**
@@ -58,6 +79,10 @@ public class Main extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         InfoBox = new javax.swing.JTextArea();
+        srcDbDeleteBtn = new javax.swing.JButton();
+        destDbDeleteBtn = new javax.swing.JButton();
+        srcEditBtn = new javax.swing.JButton();
+        sedtEditBtn = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         MainMenuFile = new javax.swing.JMenu();
         AddNewConnection = new javax.swing.JMenuItem();
@@ -93,6 +118,11 @@ public class Main extends javax.swing.JFrame {
 
         AddConnection.setText("Dodaj połączenie");
         AddConnection.setActionCommand("jButton1");
+        AddConnection.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AddConnectionActionPerformed(evt);
+            }
+        });
 
         TestConnection.setText("Testuj połączenie");
         TestConnection.addActionListener(new java.awt.event.ActionListener() {
@@ -167,13 +197,9 @@ public class Main extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(800, 350));
         setName("mainFrame"); // NOI18N
 
-        SourceConnection.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         jLabel1.setText("Źródłowa baza:");
 
         jLabel2.setText("Docelowa baza:");
-
-        DestinationConnection.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         Synchronize.setText("Wgraj zmiany");
         Synchronize.setEnabled(false);
@@ -193,6 +219,34 @@ public class Main extends javax.swing.JFrame {
         InfoBox.setFocusTraversalPolicyProvider(true);
         InfoBox.setName("infoBox"); // NOI18N
         jScrollPane1.setViewportView(InfoBox);
+
+        srcDbDeleteBtn.setText("Usuń");
+        srcDbDeleteBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                srcDbDeleteBtnActionPerformed(evt);
+            }
+        });
+
+        destDbDeleteBtn.setText("Usuń");
+        destDbDeleteBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                destDbDeleteBtnActionPerformed(evt);
+            }
+        });
+
+        srcEditBtn.setText("Edytuj");
+        srcEditBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                srcEditBtnActionPerformed(evt);
+            }
+        });
+
+        sedtEditBtn.setText("Edytuj");
+        sedtEditBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sedtEditBtnActionPerformed(evt);
+            }
+        });
 
         MainMenuFile.setText("Plik");
 
@@ -244,27 +298,41 @@ public class Main extends javax.swing.JFrame {
                             .addComponent(jLabel1))
                         .addGap(37, 37, 37)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(SourceConnection, 0, 169, Short.MAX_VALUE)
+                            .addComponent(SourceConnection, 0, 195, Short.MAX_VALUE)
                             .addComponent(DestinationConnection, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(jButton3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 481, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(destDbDeleteBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(sedtEditBtn))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(srcDbDeleteBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(srcEditBtn)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 323, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(13, 13, 13)
+                .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(SourceConnection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1))
+                            .addComponent(jLabel1)
+                            .addComponent(srcDbDeleteBtn)
+                            .addComponent(srcEditBtn))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
-                            .addComponent(DestinationConnection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
+                            .addComponent(DestinationConnection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(destDbDeleteBtn)
+                            .addComponent(sedtEditBtn))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
                         .addComponent(jButton3)
                         .addGap(18, 18, 18)
                         .addComponent(GenerateSQL)
@@ -292,25 +360,108 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void AddNewConnectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddNewConnectionActionPerformed
+        loadConnection();
         this.NewConnection.setVisible(true);
     }//GEN-LAST:event_AddNewConnectionActionPerformed
 
     private void TestConnectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TestConnectionActionPerformed
         try {
-            Connection c = Manager.getConnection(String.valueOf(Type.getSelectedItem()), Host.getText(), Port.getText(), Login.getText(), String.valueOf(Password.getPassword()));
-            if (c.isConnectionOK() == false) {
-                throw new ConnectionException("Nie można podłączyć się do bazy danych");
-            }
-            JOptionPane.showMessageDialog(this, "Udało podłączyć się do bazy danych.");
+            Connection c = getConnectionFromForm();
+            JOptionPane.showMessageDialog(this.NewConnection, "Udało podłączyć się do bazy danych.");
         } catch (ConnectionException ex) {
-            LoggerFactory.getLogger(Main.class).error(ex.getMessage());
-            JOptionPane.showMessageDialog(this, "Podane parametry nie są poprawne.");
+            LoggerFactory.getLogger(Main.class).error(ex.toString());
+            JOptionPane.showMessageDialog(this.NewConnection, ex.getMessage());
         }
     }//GEN-LAST:event_TestConnectionActionPerformed
 
     private void NewConnectionWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_NewConnectionWindowOpened
         centeredFrame(this.NewConnection);
     }//GEN-LAST:event_NewConnectionWindowOpened
+
+    private void AddConnectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddConnectionActionPerformed
+        try {
+            Connection c = getConnectionFromForm();
+            connectionStore.addConnection(c);
+            setComboConnections();
+            connectionStore.saveStoredData();
+            this.NewConnection.setVisible(false);
+            JOptionPane.showMessageDialog(this.NewConnection, "Dodano połączenie");
+        } catch (StoreException | ConnectionException ex) {
+            LoggerFactory.getLogger(Main.class).error(ex.toString());
+            JOptionPane.showMessageDialog(this.NewConnection, ex.getMessage());
+        }
+
+    }//GEN-LAST:event_AddConnectionActionPerformed
+
+    private void srcDbDeleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_srcDbDeleteBtnActionPerformed
+        Connection c = (Connection) SourceConnection.getSelectedItem();
+        delConnection(c);
+        setComboConnections();
+    }//GEN-LAST:event_srcDbDeleteBtnActionPerformed
+
+    private void destDbDeleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_destDbDeleteBtnActionPerformed
+        Connection c = (Connection) DestinationConnection.getSelectedItem();
+        delConnection(c);
+        setComboConnections();
+    }//GEN-LAST:event_destDbDeleteBtnActionPerformed
+
+    private void srcEditBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_srcEditBtnActionPerformed
+        Connection c = (Connection) SourceConnection.getSelectedItem();
+        loadConnection(c);
+        NewConnection.setVisible(true);
+    }//GEN-LAST:event_srcEditBtnActionPerformed
+
+    private void sedtEditBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sedtEditBtnActionPerformed
+        Connection c = (Connection) DestinationConnection.getSelectedItem();
+        loadConnection(c);
+        NewConnection.setVisible(true);
+    }//GEN-LAST:event_sedtEditBtnActionPerformed
+
+    private void loadConnection(Connection c) {
+        Host.setText(c.getHost());
+        Port.setText(c.getPort().toString());
+        Login.setText(c.getUsername());
+        Password.setText(c.getPassword());
+        switch (c.getClass().getName()) {
+            case "com.frasiek.dss.connection.Direct":
+                Type.setSelectedIndex(0);
+                break;
+            case "com.frasiek.dss.connection.PhpProxy":
+                Type.setSelectedIndex(1);
+                break;
+        }
+    }
+
+    private void loadConnection() {
+        Host.setText("");
+        Port.setText("");
+        Login.setText("");
+        Password.setText("");
+        Type.setSelectedIndex(-1);
+    }
+
+    private void delConnection(Connection c) {
+        connectionStore.removeConnection(c);
+        try {
+            connectionStore.saveStoredData();
+        } catch (StoreException ex) {
+            LoggerFactory.getLogger(Main.class).error(ex.toString());
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+    }
+
+    private Connection getConnectionFromForm() throws ConnectionException {
+        try {
+            Connection c = Manager.getConnection(String.valueOf(Type.getSelectedItem()), Host.getText(), Port.getText(), Login.getText(), String.valueOf(Password.getPassword()));
+            if (c.isConnectionOK() == false) {
+                throw new ConnectionException("Nie można podłączyć się do bazy danych");
+            }
+            return c;
+        } catch (ConnectionException ex) {
+            LoggerFactory.getLogger(Main.class).error(ex.toString());
+            throw new ConnectionException("Podane parametry nie są poprawne");
+        }
+    }
 
     /**
      * @param args the command line arguments
@@ -381,6 +532,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton Synchronize;
     private javax.swing.JButton TestConnection;
     private javax.swing.JComboBox Type;
+    private javax.swing.JButton destDbDeleteBtn;
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -391,5 +543,8 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton sedtEditBtn;
+    private javax.swing.JButton srcDbDeleteBtn;
+    private javax.swing.JButton srcEditBtn;
     // End of variables declaration//GEN-END:variables
 }

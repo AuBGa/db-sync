@@ -83,7 +83,30 @@ public class PhpProxy implements Connection, Serializable {
         }
         return true;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return this.username + "@" + this.host + ":" + this.port;
+    }
+
+    @Override
+    public String getHost() {
+        return host;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public Integer getPort() {
+        return port;
+    }
 
 }

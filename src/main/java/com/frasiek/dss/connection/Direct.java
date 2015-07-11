@@ -19,25 +19,25 @@ import org.slf4j.LoggerFactory;
  */
 public class Direct implements Connection, Serializable {
 
-        private String host;
-        private String username;
-        private String password;
-        private Integer port;
-        private java.sql.Connection c = null;
+    private String host;
+    private String username;
+    private String password;
+    private Integer port;
+    private transient java.sql.Connection c = null;
 
-        public Direct(String host, String username, String password) {
-            this.host = host;
-            this.username = username;
-            this.password = password;
-            this.port = 3306; //default mysql port
-        }
+    public Direct(String host, String username, String password) {
+        this.host = host;
+        this.username = username;
+        this.password = password;
+        this.port = 3306; //default mysql port
+    }
 
-        public Direct(String host, String username, String password, Integer port) {
-            this.host = host;
-            this.username = username;
-            this.password = password;
-            this.port = port;
-        }
+    public Direct(String host, String username, String password, Integer port) {
+        this.host = host;
+        this.username = username;
+        this.password = password;
+        this.port = port;
+    }
 
     @Override
     public Boolean isConnectionOK() {
@@ -45,7 +45,7 @@ public class Direct implements Connection, Serializable {
             try {
                 c.createStatement().executeQuery("SHOW DATABASES;");
             } catch (SQLException ex) {
-                LoggerFactory.getLogger(Direct.class).error(ex.getMessage());
+                LoggerFactory.getLogger(Direct.class).error(ex.toString());
                 return false;
             } finally {
                 try {
@@ -60,10 +60,10 @@ public class Direct implements Connection, Serializable {
 
     private Boolean connect() {
         try {
-            c = DriverManager.getConnection("jdbc:mysql://"+host+":"+port.toString()+"/information_schema?"
-                    + "user="+username+"&password="+password);
+            c = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port.toString() + "/information_schema?"
+                    + "user=" + username + "&password=" + password);
         } catch (SQLException ex) {
-            LoggerFactory.getLogger(Direct.class).error(ex.getMessage());
+            LoggerFactory.getLogger(Direct.class).error(ex.toString());
             return false;
         }
         return true;
@@ -112,7 +112,30 @@ public class Direct implements Connection, Serializable {
         }
         return true;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return this.username + "@" + this.host + ":" + this.port;
+    }
+
+    @Override
+    public String getHost() {
+        return host;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public Integer getPort() {
+        return port;
+    }
 
 }
