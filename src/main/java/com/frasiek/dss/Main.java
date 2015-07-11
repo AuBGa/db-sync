@@ -5,6 +5,7 @@
  */
 package com.frasiek.dss;
 
+import com.frasiek.dss.connection.Connection;
 import com.frasiek.dss.connection.ConnectionException;
 import com.frasiek.dss.connection.Manager;
 import java.awt.Dimension;

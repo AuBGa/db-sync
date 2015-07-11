@@ -5,9 +5,9 @@
  */
 package com.frasiek.dss.connection;
 
-import com.frasiek.dss.Connection;
 import com.frasiek.dss.DBStructure;
 import com.frasiek.dss.DBStructureChanges;
+import java.io.Serializable;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import org.slf4j.LoggerFactory;
@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author frasiek
  */
-public class Direct implements Connection {
+public class Direct implements Connection, Serializable {
 
         private String host;
         private String username;

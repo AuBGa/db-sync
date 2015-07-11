@@ -5,15 +5,15 @@
  */
 package com.frasiek.dss.connection;
 
-import com.frasiek.dss.Connection;
 import com.frasiek.dss.DBStructure;
 import com.frasiek.dss.DBStructureChanges;
+import java.io.Serializable;
 
 /**
  *
  * @author frasiek
  */
-public class PhpProxy implements Connection {
+public class PhpProxy implements Connection, Serializable {
 
     private String host;
     private String username;

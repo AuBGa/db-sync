@@ -5,8 +5,6 @@
  */
 package com.frasiek.dss.connection;
 
-import com.frasiek.dss.Connection;
-
 /**
  *
  * @author frasiek
