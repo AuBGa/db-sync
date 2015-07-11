@@ -7,12 +7,9 @@ package com.frasiek.dss;
 
 import com.frasiek.dss.connection.ConnectionException;
 import com.frasiek.dss.connection.Manager;
-import java.awt.Image;
-import java.awt.MediaTracker;
+import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.util.logging.Level;
 import javax.swing.JOptionPane;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -26,6 +23,7 @@ public class Main extends javax.swing.JFrame {
      */
     public Main() {
         initComponents();
+        centeredFrame(this);
     }
 
     /**
@@ -45,11 +43,11 @@ public class Main extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        Port = new javax.swing.JTextField();
         Login = new javax.swing.JTextField();
         AddConnection = new javax.swing.JButton();
         Password = new javax.swing.JPasswordField();
         TestConnection = new javax.swing.JButton();
+        Port = new javax.swing.JFormattedTextField();
         SourceConnection = new javax.swing.JComboBox();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -72,6 +70,11 @@ public class Main extends javax.swing.JFrame {
         NewConnection.setModal(true);
         NewConnection.setPreferredSize(new java.awt.Dimension(429, 330));
         NewConnection.setResizable(false);
+        NewConnection.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                NewConnectionWindowOpened(evt);
+            }
+        });
 
         Type.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Bezpośrednie połączenie", "HTTP PHP Proxy" }));
 
@@ -97,6 +100,8 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
+        Port.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
+
         javax.swing.GroupLayout NewConnectionLayout = new javax.swing.GroupLayout(NewConnection.getContentPane());
         NewConnection.getContentPane().setLayout(NewConnectionLayout);
         NewConnectionLayout.setHorizontalGroup(
@@ -104,6 +109,10 @@ public class Main extends javax.swing.JFrame {
             .addGroup(NewConnectionLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(NewConnectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(NewConnectionLayout.createSequentialGroup()
+                        .addComponent(TestConnection)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 177, Short.MAX_VALUE)
+                        .addComponent(AddConnection))
                     .addGroup(NewConnectionLayout.createSequentialGroup()
                         .addGroup(NewConnectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
@@ -115,13 +124,9 @@ public class Main extends javax.swing.JFrame {
                         .addGroup(NewConnectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(Type, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(Host)
-                            .addComponent(Port)
                             .addComponent(Login)
-                            .addComponent(Password)))
-                    .addGroup(NewConnectionLayout.createSequentialGroup()
-                        .addComponent(TestConnection)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 177, Short.MAX_VALUE)
-                        .addComponent(AddConnection)))
+                            .addComponent(Password)
+                            .addComponent(Port))))
                 .addContainerGap())
         );
         NewConnectionLayout.setVerticalGroup(
@@ -156,9 +161,7 @@ public class Main extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("DBSync");
-        setAlwaysOnTop(true);
-        setFocusable(false);
-        setFocusableWindowState(false);
+        setAutoRequestFocus(false);
         setMaximumSize(new java.awt.Dimension(1920, 1080));
         setMinimumSize(new java.awt.Dimension(800, 350));
         setName("mainFrame"); // NOI18N
@@ -292,18 +295,21 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_AddNewConnectionActionPerformed
 
     private void TestConnectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TestConnectionActionPerformed
-         
         try {
             Connection c = Manager.getConnection(String.valueOf(Type.getSelectedItem()), Host.getText(), Port.getText(), Login.getText(), String.valueOf(Password.getPassword()));
-            if(c.isConnectionOK() == false){
+            if (c.isConnectionOK() == false) {
                 throw new ConnectionException("Nie można podłączyć się do bazy danych");
             }
             JOptionPane.showMessageDialog(this, "Udało podłączyć się do bazy danych.");
         } catch (ConnectionException ex) {
             LoggerFactory.getLogger(Main.class).error(ex.getMessage());
             JOptionPane.showMessageDialog(this, "Podane parametry nie są poprawne.");
-        }   
+        }
     }//GEN-LAST:event_TestConnectionActionPerformed
+
+    private void NewConnectionWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_NewConnectionWindowOpened
+        centeredFrame(this.NewConnection);
+    }//GEN-LAST:event_NewConnectionWindowOpened
 
     /**
      * @param args the command line arguments
@@ -339,8 +345,22 @@ public class Main extends javax.swing.JFrame {
             }
         });
     }
-    
-    
+
+    public void centeredFrame(javax.swing.JFrame objFrame) {
+        Dimension objDimension = Toolkit.getDefaultToolkit().getScreenSize();
+        int iCoordX = (objDimension.width - objFrame.getWidth()) / 2;
+        int iCoordY = (objDimension.height - objFrame.getHeight()) / 2;
+        objFrame.setLocation(iCoordX, iCoordY);
+    }
+
+    public void centeredFrame(javax.swing.JDialog objDialog) {
+        Dimension objDimension = Toolkit.getDefaultToolkit().getScreenSize();
+        int iCoordX = (objDimension.width - objDialog.getWidth()) / 2;
+        int iCoordY = (objDimension.height - objDialog.getHeight()) / 2;
+        objDialog.setLocation(iCoordX, iCoordY);
+    }
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton AddConnection;
     private javax.swing.JMenuItem AddNewConnection;
@@ -354,7 +374,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenuItem MainMenuInformation;
     private javax.swing.JDialog NewConnection;
     private javax.swing.JPasswordField Password;
-    private javax.swing.JTextField Port;
+    private javax.swing.JFormattedTextField Port;
     private javax.swing.JMenuItem Quit;
     private javax.swing.JComboBox SourceConnection;
     private javax.swing.JButton Synchronize;
