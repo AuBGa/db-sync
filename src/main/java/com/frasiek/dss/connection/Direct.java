@@ -7,10 +7,17 @@ package com.frasiek.dss.connection;
 
 import com.frasiek.dss.DBStructure;
 import com.frasiek.dss.DBStructureChanges;
+import com.frasiek.dss.structure.Database;
 import java.io.Serializable;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -138,4 +145,30 @@ public class Direct implements Connection, Serializable {
         return port;
     }
 
+    @Override
+    public List<Database> getDatabases() {
+        if (connect() == false) {
+            return null;
+        }
+
+        List<Database> databases = new ArrayList<>();
+
+        try {
+            Statement smt = c.createStatement();
+            ResultSet rs = smt.executeQuery("select distinct SCHEMA_NAME from SCHEMATA;");
+            while (rs.next()) {
+                Database d = new Database(rs.getString(1));
+                databases.add(d);
+            }
+            return databases;
+        } catch (SQLException ex) {
+            LoggerFactory.getLogger(Direct.class).error(ex.toString());
+            return null;
+        } finally {
+            try {
+                c.close();
+            } catch (Exception ex) {
+            }
+        }
+    }
 }

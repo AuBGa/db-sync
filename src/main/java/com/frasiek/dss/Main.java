@@ -10,8 +10,10 @@ import com.frasiek.dss.configuration.StoreException;
 import com.frasiek.dss.connection.Connection;
 import com.frasiek.dss.connection.ConnectionException;
 import com.frasiek.dss.connection.Manager;
+import com.frasiek.dss.structure.Database;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.util.List;
 import javax.swing.JOptionPane;
 import org.slf4j.LoggerFactory;
 
@@ -76,13 +78,16 @@ public class Main extends javax.swing.JFrame {
         DestinationConnection = new javax.swing.JComboBox();
         Synchronize = new javax.swing.JButton();
         GenerateSQL = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        loadSchema = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         InfoBox = new javax.swing.JTextArea();
         srcDbDeleteBtn = new javax.swing.JButton();
         destDbDeleteBtn = new javax.swing.JButton();
         srcEditBtn = new javax.swing.JButton();
         sedtEditBtn = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        sourceDatabase = new javax.swing.JComboBox();
+        destinationDatabase = new javax.swing.JComboBox();
         jMenuBar1 = new javax.swing.JMenuBar();
         MainMenuFile = new javax.swing.JMenu();
         AddNewConnection = new javax.swing.JMenuItem();
@@ -94,7 +99,6 @@ public class Main extends javax.swing.JFrame {
         NewConnection.setAlwaysOnTop(true);
         NewConnection.setMinimumSize(new java.awt.Dimension(429, 330));
         NewConnection.setModal(true);
-        NewConnection.setPreferredSize(new java.awt.Dimension(429, 330));
         NewConnection.setResizable(false);
         NewConnection.addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
@@ -207,10 +211,11 @@ public class Main extends javax.swing.JFrame {
         GenerateSQL.setText("Generuj SQL");
         GenerateSQL.setEnabled(false);
 
-        jButton3.setText("Wczytaj schematy baz");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        loadSchema.setText("Wczytaj schematy baz");
+        loadSchema.setEnabled(false);
+        loadSchema.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                loadSchemaActionPerformed(evt);
             }
         });
 
@@ -247,6 +252,17 @@ public class Main extends javax.swing.JFrame {
                 sedtEditBtnActionPerformed(evt);
             }
         });
+
+        jButton1.setText("Wczytaj dostępne bazy");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        sourceDatabase.setToolTipText("Źródłowa baza");
+
+        destinationDatabase.setToolTipText("Docelowa baza");
 
         MainMenuFile.setText("Plik");
 
@@ -290,27 +306,32 @@ public class Main extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(Synchronize, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(GenerateSQL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
                             .addComponent(jLabel1))
                         .addGap(37, 37, 37)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(SourceConnection, 0, 195, Short.MAX_VALUE)
-                            .addComponent(DestinationConnection, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addComponent(jButton3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(destDbDeleteBtn)
+                            .addComponent(SourceConnection, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(DestinationConnection, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(sedtEditBtn))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(destDbDeleteBtn)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(sedtEditBtn))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(srcDbDeleteBtn)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(srcEditBtn))))
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(GenerateSQL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(Synchronize, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(loadSchema, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(srcDbDeleteBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(srcEditBtn)))
+                        .addComponent(sourceDatabase, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(destinationDatabase, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 323, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -332,8 +353,14 @@ public class Main extends javax.swing.JFrame {
                             .addComponent(DestinationConnection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(destDbDeleteBtn)
                             .addComponent(sedtEditBtn))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
-                        .addComponent(jButton3)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton1)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(sourceDatabase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(destinationDatabase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 58, Short.MAX_VALUE)
+                        .addComponent(loadSchema)
                         .addGap(18, 18, 18)
                         .addComponent(GenerateSQL)
                         .addGap(18, 18, 18)
@@ -344,7 +371,7 @@ public class Main extends javax.swing.JFrame {
 
         getAccessibleContext().setAccessibleDescription("");
 
-        setBounds(0, 0, 817, 292);
+        setBounds(0, 0, 817, 389);
     }// </editor-fold>//GEN-END:initComponents
 
     private void MainMenuInformationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MainMenuInformationActionPerformed
@@ -355,9 +382,11 @@ public class Main extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_QuitActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+    private void loadSchemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadSchemaActionPerformed
+        
+        Synchronize.setEnabled(true);
+        GenerateSQL.setEnabled(true);
+    }//GEN-LAST:event_loadSchemaActionPerformed
 
     private void AddNewConnectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddNewConnectionActionPerformed
         loadConnection();
@@ -416,6 +445,26 @@ public class Main extends javax.swing.JFrame {
         loadConnection(c);
         NewConnection.setVisible(true);
     }//GEN-LAST:event_sedtEditBtnActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        Connection c = (Connection) SourceConnection.getSelectedItem();
+        sourceDatabase.removeAllItems();
+        List<Database> databases = c.getDatabases();
+        if (databases != null) {
+            for (Database d : databases) {
+                sourceDatabase.addItem(d);
+            }
+        }
+        destinationDatabase.removeAllItems();
+        c = (Connection) DestinationConnection.getSelectedItem();
+        databases = c.getDatabases();
+        if (databases != null) {
+            for (Database d : databases) {
+                destinationDatabase.addItem(d);
+            }
+        }
+        loadSchema.setEnabled(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     private void loadConnection(Connection c) {
         Host.setText(c.getHost());
@@ -533,7 +582,8 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton TestConnection;
     private javax.swing.JComboBox Type;
     private javax.swing.JButton destDbDeleteBtn;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JComboBox destinationDatabase;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -543,7 +593,9 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton loadSchema;
     private javax.swing.JButton sedtEditBtn;
+    private javax.swing.JComboBox sourceDatabase;
     private javax.swing.JButton srcDbDeleteBtn;
     private javax.swing.JButton srcEditBtn;
     // End of variables declaration//GEN-END:variables
