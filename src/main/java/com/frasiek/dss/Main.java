@@ -391,7 +391,7 @@ public class Main extends javax.swing.JFrame {
         c = (Connection) DestinationConnection.getSelectedItem();
         destinatinDbStructure = c.getStructure((Database) destinationDatabase.getSelectedItem());
         
-        if (sourceDatabase.equals(destinationDatabase)) {
+        if (sourceDbStructure.equals(destinatinDbStructure)) {
             InfoBox.setText(InfoBox.getText() + "Bazy danych są identyczne."+"\r\n");
         } else {
             InfoBox.setText(InfoBox.getText() + "Bazy danych są różne."+"\r\n");

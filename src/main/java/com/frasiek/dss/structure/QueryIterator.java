@@ -5,12 +5,10 @@
  */
 package com.frasiek.dss.structure;
 
-import com.frasiek.dss.connection.Direct;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import org.apache.commons.collections.iterators.ArrayListIterator;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -28,13 +26,13 @@ public class QueryIterator implements Iterable<QueryRow>{
                 rows.add(qr);
             }
         } catch (SQLException ex) {
-            LoggerFactory.getLogger(Direct.class).error(ex.toString());
+            LoggerFactory.getLogger(QueryIterator.class).error(ex.toString());
         }
     }
     
     @Override
     public Iterator<QueryRow> iterator() {
-        return new ArrayListIterator(rows);
+        return rows.iterator();
     }
     
     

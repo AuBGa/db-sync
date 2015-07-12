@@ -5,7 +5,6 @@
  */
 package com.frasiek.dss.structure;
 
-import com.frasiek.dss.connection.Direct;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -23,11 +22,11 @@ public class QueryRow {
     public QueryRow(ResultSet rs) {
         try {
             ResultSetMetaData rsmd = rs.getMetaData();
-            for (int i = 0; i < rsmd.getColumnCount(); i++) {
+            for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                 row.add(rs.getString(i));
             }
         } catch (SQLException ex) {
-            LoggerFactory.getLogger(Direct.class).error(ex.toString());
+            LoggerFactory.getLogger(QueryRow.class).error(ex.toString());
         }
     }
 

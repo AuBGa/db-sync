@@ -19,7 +19,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
-import javax.swing.ComboBoxModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
