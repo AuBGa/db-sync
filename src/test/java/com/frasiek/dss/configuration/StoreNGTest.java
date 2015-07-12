@@ -9,7 +9,8 @@ import com.frasiek.dss.connection.Connection;
 import com.frasiek.dss.connection.Direct;
 import java.io.File;
 import java.util.Set;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.Test;
 
 /**
@@ -22,7 +23,7 @@ public class StoreNGTest {
     private Store instance;
 
     public StoreNGTest() throws StoreException {
-        testConnection = new Direct("test", "test", "1");
+        testConnection = new Direct("localhost", "root", "root",3306);
         instance = Store.getInstance();
     }
 

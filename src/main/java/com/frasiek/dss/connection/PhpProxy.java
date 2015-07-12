@@ -7,7 +7,9 @@ package com.frasiek.dss.connection;
 
 import com.frasiek.dss.DBStructure;
 import com.frasiek.dss.DBStructureChanges;
+import com.frasiek.dss.structure.Database;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -41,12 +43,16 @@ public class PhpProxy implements Connection, Serializable {
     }
 
     @Override
-    public DBStructure getStructure() {
+    public DBStructure getStructure(Database database) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void setNewStructure(DBStructureChanges dbChanges) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public List<Database> getDatabases() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -7,7 +7,8 @@ package com.frasiek.dss.connection;
 
 import com.frasiek.dss.DBStructure;
 import com.frasiek.dss.DBStructureChanges;
-import java.io.Serializable;
+import com.frasiek.dss.structure.Database;
+import java.util.List;
 
 /**
  *
@@ -17,7 +18,7 @@ public interface Connection {
 
     public Boolean isConnectionOK();
 
-    public DBStructure getStructure();
+    public DBStructure getStructure(Database database);
 
     public void setNewStructure(DBStructureChanges dbChanges);
 
@@ -31,5 +32,7 @@ public interface Connection {
     public String getPassword();
 
     public Integer getPort();
+    
+    public List<Database> getDatabases();
 
 }
