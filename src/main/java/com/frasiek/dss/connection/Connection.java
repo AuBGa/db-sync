@@ -18,7 +18,7 @@ public interface Connection {
 
     public Boolean isConnectionOK();
 
-    public DBStructure getStructure();
+    public DBStructure getStructure(Database database);
 
     public void setNewStructure(DBStructureChanges dbChanges);
 

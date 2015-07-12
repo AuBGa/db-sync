@@ -43,7 +43,7 @@ public class PhpProxy implements Connection, Serializable {
     }
 
     @Override
-    public DBStructure getStructure() {
+    public DBStructure getStructure(Database database) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

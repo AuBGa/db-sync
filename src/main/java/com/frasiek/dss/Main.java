@@ -22,9 +22,12 @@ import org.slf4j.LoggerFactory;
  * @author frasiek
  */
 public class Main extends javax.swing.JFrame {
-
+    
     private Store connectionStore;
     private org.slf4j.Logger logger = null;
+    
+    private DBStructure sourceDbStructure = null;
+    private DBStructure destinatinDbStructure = null;
 
     /**
      * Creates new form Main
@@ -40,7 +43,7 @@ public class Main extends javax.swing.JFrame {
         setComboConnections();
         centeredFrame(this);
     }
-
+    
     private void setComboConnections() {
         SourceConnection.removeAllItems();
         DestinationConnection.removeAllItems();
@@ -383,6 +386,16 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_QuitActionPerformed
 
     private void loadSchemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadSchemaActionPerformed
+        Connection c = (Connection) SourceConnection.getSelectedItem();
+        sourceDbStructure = c.getStructure((Database) sourceDatabase.getSelectedItem());
+        c = (Connection) DestinationConnection.getSelectedItem();
+        destinatinDbStructure = c.getStructure((Database) destinationDatabase.getSelectedItem());
+        
+        if (sourceDatabase.equals(destinationDatabase)) {
+            InfoBox.setText(InfoBox.getText() + "Bazy danych są identyczne."+"\r\n");
+        } else {
+            InfoBox.setText(InfoBox.getText() + "Bazy danych są różne."+"\r\n");
+        }
         
         Synchronize.setEnabled(true);
         GenerateSQL.setEnabled(true);
@@ -465,7 +478,7 @@ public class Main extends javax.swing.JFrame {
         }
         loadSchema.setEnabled(true);
     }//GEN-LAST:event_jButton1ActionPerformed
-
+    
     private void loadConnection(Connection c) {
         Host.setText(c.getHost());
         Port.setText(c.getPort().toString());
@@ -480,7 +493,7 @@ public class Main extends javax.swing.JFrame {
                 break;
         }
     }
-
+    
     private void loadConnection() {
         Host.setText("");
         Port.setText("");
@@ -488,7 +501,7 @@ public class Main extends javax.swing.JFrame {
         Password.setText("");
         Type.setSelectedIndex(-1);
     }
-
+    
     private void delConnection(Connection c) {
         connectionStore.removeConnection(c);
         try {
@@ -498,7 +511,7 @@ public class Main extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, ex.getMessage());
         }
     }
-
+    
     private Connection getConnectionFromForm() throws ConnectionException {
         try {
             Connection c = Manager.getConnection(String.valueOf(Type.getSelectedItem()), Host.getText(), Port.getText(), Login.getText(), String.valueOf(Password.getPassword()));
@@ -546,14 +559,14 @@ public class Main extends javax.swing.JFrame {
             }
         });
     }
-
+    
     public void centeredFrame(javax.swing.JFrame objFrame) {
         Dimension objDimension = Toolkit.getDefaultToolkit().getScreenSize();
         int iCoordX = (objDimension.width - objFrame.getWidth()) / 2;
         int iCoordY = (objDimension.height - objFrame.getHeight()) / 2;
         objFrame.setLocation(iCoordX, iCoordY);
     }
-
+    
     public void centeredFrame(javax.swing.JDialog objDialog) {
         Dimension objDimension = Toolkit.getDefaultToolkit().getScreenSize();
         int iCoordX = (objDimension.width - objDialog.getWidth()) / 2;

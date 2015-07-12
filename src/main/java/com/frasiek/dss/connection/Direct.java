@@ -8,6 +8,8 @@ package com.frasiek.dss.connection;
 import com.frasiek.dss.DBStructure;
 import com.frasiek.dss.DBStructureChanges;
 import com.frasiek.dss.structure.Database;
+import com.frasiek.dss.structure.Query;
+import com.frasiek.dss.structure.QueryIterator;
 import java.io.Serializable;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -16,8 +18,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -77,8 +77,31 @@ public class Direct implements Connection, Serializable {
     }
 
     @Override
-    public DBStructure getStructure() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public DBStructure getStructure(Database database) {
+        try {
+            if (connect() == false) {
+                return null;
+            }
+            ResultSet rs = c.createStatement().executeQuery(Query.getTables(database.getName()));
+            QueryIterator qi = new QueryIterator(rs);
+
+            DBStructure structure = new DBStructure(Query.getTablesMap(qi));
+            for (String table : structure.getTables().keySet()) {
+                rs = c.createStatement().executeQuery(Query.getFields(database.getName(), table));
+                qi = new QueryIterator(rs);
+                structure.setField(table, Query.getFieldsMap(qi));
+            }
+
+            return structure;
+        } catch (SQLException ex) {
+            LoggerFactory.getLogger(Direct.class).error(ex.toString());
+            return null;
+        } finally {
+            try {
+                c.close();
+            } catch (Exception ex) {
+            }
+        }
     }
 
     @Override
@@ -155,7 +178,7 @@ public class Direct implements Connection, Serializable {
 
         try {
             Statement smt = c.createStatement();
-            ResultSet rs = smt.executeQuery("select distinct SCHEMA_NAME from SCHEMATA;");
+            ResultSet rs = smt.executeQuery(Query.getDatabases());
             while (rs.next()) {
                 Database d = new Database(rs.getString(1));
                 databases.add(d);
