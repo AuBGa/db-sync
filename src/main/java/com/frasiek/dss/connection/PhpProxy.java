@@ -55,6 +55,10 @@ public class PhpProxy implements Connection, Serializable {
     public List<Database> getDatabases() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+    public Boolean applyChanges(String sql){
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
     @Override
     public int hashCode() {

@@ -348,6 +348,9 @@
         <Property name="text" type="java.lang.String" value="Wgraj zmiany"/>
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="SynchronizeActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="GenerateSQL">
       <Properties>
@@ -431,6 +434,9 @@
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="&#x179;r&#xf3;d&#x142;owa baza"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="sourceDatabaseActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JComboBox" name="destinationDatabase">
       <Properties>
@@ -439,6 +445,9 @@
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Docelowa baza"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="destinationDatabaseActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

@@ -210,6 +210,11 @@ public class Main extends javax.swing.JFrame {
 
         Synchronize.setText("Wgraj zmiany");
         Synchronize.setEnabled(false);
+        Synchronize.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SynchronizeActionPerformed(evt);
+            }
+        });
 
         GenerateSQL.setText("Generuj SQL");
         GenerateSQL.setEnabled(false);
@@ -269,8 +274,18 @@ public class Main extends javax.swing.JFrame {
         });
 
         sourceDatabase.setToolTipText("Źródłowa baza");
+        sourceDatabase.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sourceDatabaseActionPerformed(evt);
+            }
+        });
 
         destinationDatabase.setToolTipText("Docelowa baza");
+        destinationDatabase.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                destinationDatabaseActionPerformed(evt);
+            }
+        });
 
         MainMenuFile.setText("Plik");
 
@@ -492,6 +507,33 @@ public class Main extends javax.swing.JFrame {
             InfoBox.setText(changes.getSyncSQL());
         }
     }//GEN-LAST:event_GenerateSQLActionPerformed
+
+    private void SynchronizeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SynchronizeActionPerformed
+        if (sourceDbStructure.equals(destinatinDbStructure)) {
+            InfoBox.setText(InfoBox.getText() + "Bazy danych są identyczne."+"\r\n");
+        } else {
+            DBStructureChanges changes = new DBStructureChanges(sourceDbStructure, destinatinDbStructure);
+            String sql = changes.getSyncSQL();
+            Connection c = (Connection) DestinationConnection.getSelectedItem();
+            if(c.applyChanges(sql)){
+                InfoBox.setText("Wgrano zmiany."+"\r\n");
+            } else {
+                InfoBox.setText("Wystąpił błąd."+"\r\n");
+            }
+        }
+        GenerateSQL.setEnabled(false);
+        Synchronize.setEnabled(false);
+    }//GEN-LAST:event_SynchronizeActionPerformed
+
+    private void destinationDatabaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_destinationDatabaseActionPerformed
+        GenerateSQL.setEnabled(false);
+        Synchronize.setEnabled(false);
+    }//GEN-LAST:event_destinationDatabaseActionPerformed
+
+    private void sourceDatabaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sourceDatabaseActionPerformed
+        GenerateSQL.setEnabled(false);
+        Synchronize.setEnabled(false);
+    }//GEN-LAST:event_sourceDatabaseActionPerformed
     
     private void loadConnection(Connection c) {
         Host.setText(c.getHost());

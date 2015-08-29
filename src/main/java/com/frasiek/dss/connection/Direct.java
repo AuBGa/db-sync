@@ -19,6 +19,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -86,12 +88,12 @@ public class Direct implements Connection, Serializable {
             ResultSet rs = c.createStatement().executeQuery(Query.getTables(database.getName()));
             QueryIterator qi = new QueryIterator(rs);
 
-            DBStructure structure = new DBStructure(Query.getTablesMap(qi));
+            DBStructure structure = new DBStructure(database.getName(), Query.getTablesMap(qi));
             for (String table : structure.getTables().keySet()) {
                 rs = c.createStatement().executeQuery(Query.getFields(database.getName(), table));
                 qi = new QueryIterator(rs);
                 structure.setField(table, Query.getFieldsMap(qi));
-                
+
                 rs = c.createStatement().executeQuery(Query.getIndexes(database.getName(), table));
                 qi = new QueryIterator(rs);
                 ArrayList<Index> indexes = Query.getIndexList(qi);
@@ -199,5 +201,32 @@ public class Direct implements Connection, Serializable {
             } catch (Exception ex) {
             }
         }
+    }
+
+    @Override
+    public Boolean applyChanges(String sql) {
+        if (connect() == false) {
+            return false;
+        }
+
+        try {
+            String[] queries = sql.split(";");
+
+            for (String query : queries) {
+                if(query.trim().equals("")){
+                    continue;
+                }
+                c.createStatement().execute(query.replaceAll("\r\n", " "));
+            }
+        } catch (SQLException ex) {
+            System.err.print(ex.toString());
+            return false;
+        } finally {
+            try {
+                c.close();
+            } catch (Exception ex) {
+            }
+        }
+        return true;
     }
 }

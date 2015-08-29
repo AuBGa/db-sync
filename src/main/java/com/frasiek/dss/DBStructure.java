@@ -18,14 +18,26 @@ import java.util.Objects;
 public class DBStructure {
 
     private HashMap<String, Table> tables;
+    private String databaseName;
 
     public DBStructure() {
 
     }
 
-    public DBStructure(HashMap<String, Table> tables) {
+    public DBStructure(String databaseName, HashMap<String, Table> tables) {
         this.tables = tables;
+        this.databaseName = databaseName;
     }
+
+    public String getDatabaseName() {
+        return databaseName;
+    }
+
+    public void setDatabaseName(String databaseName) {
+        this.databaseName = databaseName;
+    }
+    
+    
 
     public HashMap<String, Table> getTables() {
         return tables;

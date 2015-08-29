@@ -34,7 +34,7 @@ public class DBStructureChanges {
     }
 
     private void calculateSyncSQL() {
-        sql = "";
+        sql = "USE `"+destination.getDatabaseName()+"`;";
 
         Map<String, Table> sourceTables = source.getTables();
         Map<String, Table> destTables = destination.getTables();

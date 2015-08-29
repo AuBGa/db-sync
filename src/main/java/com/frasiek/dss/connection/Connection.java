@@ -34,5 +34,7 @@ public interface Connection {
     public Integer getPort();
     
     public List<Database> getDatabases();
+    
+    public Boolean applyChanges(String sql);
 
 }
