@@ -267,7 +267,7 @@
                           </Group>
                       </Group>
                   </Group>
-                  <Component id="jButton1" alignment="0" max="32767" attributes="0"/>
+                  <Component id="LoadDatabasesBtn" alignment="0" max="32767" attributes="0"/>
                   <Component id="GenerateSQL" alignment="0" max="32767" attributes="0"/>
                   <Component id="Synchronize" max="32767" attributes="0"/>
                   <Component id="loadSchema" alignment="0" max="32767" attributes="0"/>
@@ -303,7 +303,7 @@
                           <Component id="sedtEditBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+                      <Component id="LoadDatabasesBtn" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="sourceDatabase" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -354,6 +354,9 @@
         <Property name="text" type="java.lang.String" value="Generuj SQL"/>
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="GenerateSQLActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="loadSchema">
       <Properties>
@@ -413,12 +416,12 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="sedtEditBtnActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton1">
+    <Component class="javax.swing.JButton" name="LoadDatabasesBtn">
       <Properties>
         <Property name="text" type="java.lang.String" value="Wczytaj dost&#x119;pne bazy"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="LoadDatabasesBtnActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JComboBox" name="sourceDatabase">

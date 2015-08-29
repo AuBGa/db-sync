@@ -5,7 +5,8 @@
  */
 package com.frasiek.dss.structure;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Objects;
 
 /**
@@ -18,9 +19,8 @@ public class Table {
     private String engine;
     private String collation;
 
-    private HashMap<String, Field> fields;
-    private HashMap<String, Index> indexes;
-    private HashMap<String, PK> pks;
+    private LinkedHashMap<String, Field> fields;
+    private ArrayList<Index> indexes;
 
     public Table(String name, String engine, String collation) {
         this.name = name;
@@ -36,7 +36,6 @@ public class Table {
         hash = 79 * hash + Objects.hashCode(this.collation);
         hash = 79 * hash + Objects.hashCode(this.fields);
         hash = 79 * hash + Objects.hashCode(this.indexes);
-        hash = 79 * hash + Objects.hashCode(this.pks);
         return hash;
     }
 
@@ -64,22 +63,35 @@ public class Table {
         if (!Objects.equals(this.indexes, other.indexes)) {
             return false;
         }
-        if (!Objects.equals(this.pks, other.pks)) {
-            return false;
-        }
         return true;
     }
 
-    public void setFields(HashMap<String, Field> fields) {
+    public void setFields(LinkedHashMap<String, Field> fields) {
         this.fields = fields;
     }
 
-    public void setIndexes(HashMap<String, Index> indexes) {
+    public void setIndexes(ArrayList<Index> indexes) {
         this.indexes = indexes;
     }
 
-    public void setPks(HashMap<String, PK> pks) {
-        this.pks = pks;
+    public String getName() {
+        return name;
+    }
+
+    public String getEngine() {
+        return engine;
+    }
+
+    public String getCollation() {
+        return collation;
+    }
+
+    public LinkedHashMap<String, Field> getFields() {
+        return fields;
+    }
+
+    public ArrayList<Index> getIndexes() {
+        return indexes;
     }
 
 }

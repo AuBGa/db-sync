@@ -88,7 +88,7 @@ public class Main extends javax.swing.JFrame {
         destDbDeleteBtn = new javax.swing.JButton();
         srcEditBtn = new javax.swing.JButton();
         sedtEditBtn = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        LoadDatabasesBtn = new javax.swing.JButton();
         sourceDatabase = new javax.swing.JComboBox();
         destinationDatabase = new javax.swing.JComboBox();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -213,6 +213,11 @@ public class Main extends javax.swing.JFrame {
 
         GenerateSQL.setText("Generuj SQL");
         GenerateSQL.setEnabled(false);
+        GenerateSQL.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                GenerateSQLActionPerformed(evt);
+            }
+        });
 
         loadSchema.setText("Wczytaj schematy baz");
         loadSchema.setEnabled(false);
@@ -256,10 +261,10 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("Wczytaj dostępne bazy");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        LoadDatabasesBtn.setText("Wczytaj dostępne bazy");
+        LoadDatabasesBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                LoadDatabasesBtnActionPerformed(evt);
             }
         });
 
@@ -327,7 +332,7 @@ public class Main extends javax.swing.JFrame {
                                 .addComponent(srcDbDeleteBtn)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(srcEditBtn))))
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(LoadDatabasesBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(GenerateSQL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(Synchronize, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(loadSchema, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -357,7 +362,7 @@ public class Main extends javax.swing.JFrame {
                             .addComponent(destDbDeleteBtn)
                             .addComponent(sedtEditBtn))
                         .addGap(18, 18, 18)
-                        .addComponent(jButton1)
+                        .addComponent(LoadDatabasesBtn)
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(sourceDatabase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -459,7 +464,7 @@ public class Main extends javax.swing.JFrame {
         NewConnection.setVisible(true);
     }//GEN-LAST:event_sedtEditBtnActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void LoadDatabasesBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoadDatabasesBtnActionPerformed
         Connection c = (Connection) SourceConnection.getSelectedItem();
         sourceDatabase.removeAllItems();
         List<Database> databases = c.getDatabases();
@@ -477,7 +482,16 @@ public class Main extends javax.swing.JFrame {
             }
         }
         loadSchema.setEnabled(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_LoadDatabasesBtnActionPerformed
+
+    private void GenerateSQLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GenerateSQLActionPerformed
+        if (sourceDbStructure.equals(destinatinDbStructure)) {
+            InfoBox.setText(InfoBox.getText() + "Bazy danych są identyczne."+"\r\n");
+        } else {
+            DBStructureChanges changes = new DBStructureChanges(sourceDbStructure, destinatinDbStructure);
+            InfoBox.setText(changes.getSyncSQL());
+        }
+    }//GEN-LAST:event_GenerateSQLActionPerformed
     
     private void loadConnection(Connection c) {
         Host.setText(c.getHost());
@@ -582,6 +596,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton GenerateSQL;
     private javax.swing.JTextField Host;
     private javax.swing.JTextArea InfoBox;
+    private javax.swing.JButton LoadDatabasesBtn;
     private javax.swing.JTextField Login;
     private javax.swing.JMenu MainMenuFile;
     private javax.swing.JMenu MainMenuHelp;
@@ -596,7 +611,6 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JComboBox Type;
     private javax.swing.JButton destDbDeleteBtn;
     private javax.swing.JComboBox destinationDatabase;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

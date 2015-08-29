@@ -5,7 +5,9 @@
  */
 package com.frasiek.dss.structure;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  *
@@ -30,15 +32,34 @@ public class Query {
     }
     
     public static String getFields(String database, String table) {
-        return "select t.COLUMN_NAME, t.`IS_NULLABLE`, t.`CHARACTER_SET_NAME`, t.`COLLATION_NAME`, t.`COLUMN_TYPE`, t.`EXTRA` from `COLUMNS` t where t.TABLE_SCHEMA = '" + database + "' and `TABLE_NAME` = '"+table+"' order by `ORDINAL_POSITION`";
+        return "select t.COLUMN_NAME, t.`IS_NULLABLE`, t.`CHARACTER_SET_NAME`, t.`COLLATION_NAME`, t.`COLUMN_TYPE`, t.`EXTRA`, t.`COLUMN_DEFAULT` from `COLUMNS` t where t.TABLE_SCHEMA = '" + database + "' and `TABLE_NAME` = '"+table+"' order by `ORDINAL_POSITION`";
     }
     
-    public static HashMap<String, Field> getFieldsMap(QueryIterator qi) {
-        HashMap<String, Field> fields = new HashMap<>();
+    public static LinkedHashMap<String, Field> getFieldsMap(QueryIterator qi) {
+        LinkedHashMap<String, Field> fields = new LinkedHashMap<>();
         for (QueryRow row : qi) {
-            fields.put(row.getAt(0), new Field(row.getAt(0), row.getAt(1), row.getAt(2), row.getAt(3), row.getAt(4), row.getAt(5)));
+            fields.put(row.getAt(0), new Field(row.getAt(0), row.getAt(1), row.getAt(2), row.getAt(3), row.getAt(4), row.getAt(5), row.getAt(6)));
         }
         return fields;
     }
+    
+    public static String getIndexes(String database, String table){
+        return "SHOW INDEX FROM `"+database+"`.`"+table+"`;";
+    }
+    
+    public static ArrayList<Index> getIndexList(QueryIterator qi){
+        ArrayList<Index> indexes = new ArrayList<>();
+        for (QueryRow row : qi) {
+            Index i = new Index(row.getAt(0), row.getAt(1), row.getAt(2), row.getAt(4));
+            if(indexes.contains(i)){
+                indexes.get(indexes.indexOf(i)).addFieldName(i.getColName());
+            } else {
+                indexes.add(i);
+            }
+        }
+        return indexes;
+    }
+    
+    
     
 }

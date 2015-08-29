@@ -8,6 +8,7 @@ package com.frasiek.dss;
 import com.frasiek.dss.structure.Field;
 import com.frasiek.dss.structure.Table;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Objects;
 
 /**
@@ -29,12 +30,16 @@ public class DBStructure {
     public HashMap<String, Table> getTables() {
         return tables;
     }
+    
+    public Table getTable(String tableName){
+        return tables.get(tableName);
+    }
 
     public void setTables(HashMap<String, Table> tables) {
         this.tables = tables;
     }
     
-    public void setField(String table, HashMap<String, Field> fields){
+    public void setField(String table, LinkedHashMap<String, Field> fields){
         this.tables.get(table).setFields(fields);
     }
 

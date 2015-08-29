@@ -8,6 +8,7 @@ package com.frasiek.dss.connection;
 import com.frasiek.dss.DBStructure;
 import com.frasiek.dss.DBStructureChanges;
 import com.frasiek.dss.structure.Database;
+import com.frasiek.dss.structure.Index;
 import com.frasiek.dss.structure.Query;
 import com.frasiek.dss.structure.QueryIterator;
 import java.io.Serializable;
@@ -90,6 +91,11 @@ public class Direct implements Connection, Serializable {
                 rs = c.createStatement().executeQuery(Query.getFields(database.getName(), table));
                 qi = new QueryIterator(rs);
                 structure.setField(table, Query.getFieldsMap(qi));
+                
+                rs = c.createStatement().executeQuery(Query.getIndexes(database.getName(), table));
+                qi = new QueryIterator(rs);
+                ArrayList<Index> indexes = Query.getIndexList(qi);
+                structure.getTable(table).setIndexes(indexes);
             }
 
             return structure;
