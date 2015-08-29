@@ -5,7 +5,6 @@
  */
 package com.frasiek.dss.structure;
 
-import com.frasiek.dss.connection.Direct;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Objects;

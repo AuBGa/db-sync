@@ -16,7 +16,7 @@ import java.util.LinkedHashMap;
 public class Query {
 
     public static String getTables(String database) {
-        return "select t.TABLE_NAME, t.`ENGINE`, t.TABLE_COLLATION from `TABLES` t where t.TABLE_SCHEMA = '" + database + "'";
+        return "select t.TABLE_NAME, t.`ENGINE`, t.TABLE_COLLATION from `TABLES` t where t.TABLE_TYPE = \"BASE TABLE\" and t.TABLE_SCHEMA = '" + database + "'";
     }
     
     public static String getDatabases(){

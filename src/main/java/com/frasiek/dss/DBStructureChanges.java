@@ -34,7 +34,7 @@ public class DBStructureChanges {
     }
 
     private void calculateSyncSQL() {
-        sql = "USE `"+destination.getDatabaseName()+"`;";
+        sql = "USE `" + destination.getDatabaseName() + "`; SET foreign_key_checks = 0;";
 
         Map<String, Table> sourceTables = source.getTables();
         Map<String, Table> destTables = destination.getTables();
@@ -64,27 +64,25 @@ public class DBStructureChanges {
 
                 Map<String, Field> toDelete = (Map<String, Field>) destFields.clone();
                 Set<String> keys = toDelete.keySet();
-                if (keys.removeAll(sourceFields.keySet())) {
-                    for (String toDeleteFieldName : keys) {
-                        sql += SqlGenerator.removeField(destTable, toDeleteFieldName) + "\r\n";
-                    }
+                keys.removeAll(sourceFields.keySet());
+                for (String toDeleteFieldName : keys) {
+                    sql += SqlGenerator.removeField(destTable, toDeleteFieldName) + "\r\n";
                 }
-                
-                if(destTable.getCollation().equals(sourceTable.getCollation()) == false){
+
+                if (destTable.getCollation().equals(sourceTable.getCollation()) == false) {
                     sql += SqlGenerator.changeCollationOfTable(destTable, sourceTable.getCollation()) + "\r\n";
                 }
-                
-                if(destTable.getIndexes().equals(sourceTable.getIndexes()) == false){
+
+                if (destTable.getIndexes().equals(sourceTable.getIndexes()) == false) {
                     sql += SqlGenerator.changeIndexesOfTable(destTable, sourceTable.getIndexes()) + "\r\n";
                 }
             }
         }
         Set<String> tables = new HashSet<String>(destTables.keySet());
-        if (tables.removeAll(sourceTables.keySet())) {
-            for (String tableName : tables) {
-                sql += SqlGenerator.removeTable(tableName) + "\r\n";
-            }
+        tables.removeAll(sourceTables.keySet());
+        for (String tableName : tables) {
+            sql += SqlGenerator.removeTable(tableName) + "\r\n";
         }
+        sql += "SET foreign_key_checks = 1;";
     }
-
 }

@@ -5,7 +5,6 @@
  */
 package com.frasiek.dss.structure;
 
-import com.frasiek.dss.connection.Direct;
 import java.util.Objects;
 import org.slf4j.LoggerFactory;
 
