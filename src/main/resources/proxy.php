@@ -1,4 +1,5 @@
 <?php
+
 namespace com\frasiek\dss;
 
 /**
@@ -21,6 +22,11 @@ class DatabaseSchemaSynchronizer {
      * @var mixed
      */
     private $data;
+
+    /**
+     * @var array
+     */
+    private $header = array();
 
     /**
      * Połączenie z bazą danych
@@ -51,6 +57,11 @@ class DatabaseSchemaSynchronizer {
     public function runQuery() {
         if ($this->getPart(self::RETURN_TXT) == '1') {
             $this->data = $this->getAll($this->getPart(self::SQL));
+            if (isset($this->data[0])) {
+                $this->header = array_keys($this->data[0]);
+            } else {
+                $this->header = array();
+            }
         } else {
             $this->query($this->getPart(self::SQL));
             if ($this->db->errno > 0) {
@@ -69,7 +80,7 @@ class DatabaseSchemaSynchronizer {
             return null;
         }
         $data = array();
-        while ($tmp = $result->fetch_object()) {
+        while ($tmp = $result->fetch_assoc()) {
             $data[] = $tmp;
         }
         $result->close();
@@ -118,7 +129,14 @@ class DatabaseSchemaSynchronizer {
         return $this->data;
     }
 
+    function getHeader() {
+        return $this->header;
+    }
+
+
+    
 }
+
 header('Content-Type: text/html; charset=utf-8');
 if (!isset($_POST)) {
     $_POST = array();
@@ -130,6 +148,7 @@ $databaseSchemaSynchronizer->handleRequest($_POST);
 $response = array(
     'status' => $databaseSchemaSynchronizer->getStatus(),
     'data' => $databaseSchemaSynchronizer->getData(),
+    'header' => $databaseSchemaSynchronizer->getHeader()
 );
 
 echo json_encode($response);

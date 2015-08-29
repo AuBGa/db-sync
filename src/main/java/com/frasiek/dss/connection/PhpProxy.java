@@ -198,11 +198,12 @@ public class PhpProxy implements Connection, Serializable {
         params.put("sql", query);
         params.put("return", (returnResult ? "1" : "0"));
         String response = Http.sendPost(this.getHost(), params);
+        LoggerFactory.getLogger(Direct.class).debug(response);
         try {
             JSONObject jsonObj = new JSONObject(response);
             return jsonObj;
         } catch (JSONException ex) {
-            Logger.getLogger(PhpProxy.class.getName()).log(Level.SEVERE, null, ex);
+            LoggerFactory.getLogger(Direct.class).error(ex.toString());
             throw ex;
         }
     }

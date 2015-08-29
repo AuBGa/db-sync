@@ -9,8 +9,6 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,11 +33,16 @@ public class QueryRow {
         }
     }
 
-    public QueryRow(JSONObject rs) {
+    public QueryRow(JSONObject rs, JSONArray header) {
         try {
-            JSONArray names = rs.names();
-            for (int i = 0; i < names.length(); i++) {
-                row.add(rs.getString(names.getString(i)));
+            for (int i = 0; i < header.length(); i++) {
+                String value = rs.getString(header.getString(i));
+                if(value.toLowerCase().equals("null")){
+                    row.add(null);
+                } else {
+                    row.add(value);
+                }
+                
             }
         } catch (JSONException ex) {
             LoggerFactory.getLogger(QueryRow.class).error(ex.toString());
