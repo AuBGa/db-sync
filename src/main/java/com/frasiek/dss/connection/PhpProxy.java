@@ -6,11 +6,26 @@
 package com.frasiek.dss.connection;
 
 import com.frasiek.dss.DBStructure;
-import com.frasiek.dss.DBStructureChanges;
+import com.frasiek.dss.Http;
 import com.frasiek.dss.structure.Database;
+import com.frasiek.dss.structure.Index;
+import com.frasiek.dss.structure.Query;
+import com.frasiek.dss.structure.QueryIterator;
+import com.frasiek.dss.structure.QueryRow;
 import java.io.Serializable;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -39,25 +54,75 @@ public class PhpProxy implements Connection, Serializable {
 
     @Override
     public Boolean isConnectionOK() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            JSONObject json = this.sendQuery("SHOW DATABASES;", true);
+            QueryIterator qi = new QueryIterator(json);
+            return qi.iterator().hasNext();
+        } catch (JSONException ex) {
+            LoggerFactory.getLogger(Direct.class).error(ex.toString());
+        }
+        return false;
     }
 
     @Override
     public DBStructure getStructure(Database database) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+        try {
+            JSONObject rs = this.sendQuery(Query.getTables(database.getName()));
+            QueryIterator qi = new QueryIterator(rs);
 
-    @Override
-    public void setNewStructure(DBStructureChanges dbChanges) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            DBStructure structure = new DBStructure(database.getName(), Query.getTablesMap(qi));
+            for (String table : structure.getTables().keySet()) {
+                rs = sendQuery(Query.getFields(database.getName(), table));
+                qi = new QueryIterator(rs);
+                structure.setField(table, Query.getFieldsMap(qi));
+
+                rs = sendQuery(Query.getIndexes(database.getName(), table));
+                qi = new QueryIterator(rs);
+                ArrayList<Index> indexes = Query.getIndexList(qi);
+                structure.getTable(table).setIndexes(indexes);
+            }
+
+            return structure;
+        } catch (JSONException ex) {
+            LoggerFactory.getLogger(Direct.class).error(ex.toString());
+            return null;
+        }
     }
 
     public List<Database> getDatabases() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Database> databases = new ArrayList<>();
+        try {
+            JSONObject rs = this.sendQuery(Query.getDatabases());
+            QueryIterator qi = new QueryIterator(rs);
+            Iterator it = qi.iterator();
+            while (it.hasNext()) {
+                QueryRow qr = (QueryRow) it.next();
+                Database d = new Database(qr.getAt(0));
+                databases.add(d);
+            }
+            return databases;
+        } catch (JSONException ex) {
+            LoggerFactory.getLogger(Direct.class).error(ex.toString());
+            return null;
+        }
     }
-    
-    public Boolean applyChanges(String sql){
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+    @Override
+    public Boolean applyChanges(String sql) {
+        String[] queries = sql.split(";");
+
+        for (String query : queries) {
+            if (query.trim().equals("")) {
+                continue;
+            }
+            try {
+                sendQuery(query.replaceAll("\r\n", " "), false);
+            } catch (JSONException ex) {
+                LoggerFactory.getLogger(Direct.class).error(ex.toString());
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -71,7 +136,8 @@ public class PhpProxy implements Connection, Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(Object obj
+    ) {
         if (obj == null) {
             return false;
         }
@@ -117,6 +183,28 @@ public class PhpProxy implements Connection, Serializable {
     @Override
     public Integer getPort() {
         return port;
+    }
+
+    private JSONObject sendQuery(String query) throws JSONException {
+        return sendQuery(query, Boolean.TRUE);
+    }
+
+    private JSONObject sendQuery(String query, Boolean returnResult) throws JSONException {
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("host", "localhost");
+        params.put("login", this.getUsername());
+        params.put("password", this.getPassword());
+        params.put("port", this.getPort().toString());
+        params.put("sql", query);
+        params.put("return", (returnResult ? "1" : "0"));
+        String response = Http.sendPost(this.getHost(), params);
+        try {
+            JSONObject jsonObj = new JSONObject(response);
+            return jsonObj;
+        } catch (JSONException ex) {
+            Logger.getLogger(PhpProxy.class.getName()).log(Level.SEVERE, null, ex);
+            throw ex;
+        }
     }
 
 }

@@ -9,6 +9,11 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -26,6 +31,17 @@ public class QueryRow {
                 row.add(rs.getString(i));
             }
         } catch (SQLException ex) {
+            LoggerFactory.getLogger(QueryRow.class).error(ex.toString());
+        }
+    }
+
+    public QueryRow(JSONObject rs) {
+        try {
+            JSONArray names = rs.names();
+            for (int i = 0; i < names.length(); i++) {
+                row.add(rs.getString(names.getString(i)));
+            }
+        } catch (JSONException ex) {
             LoggerFactory.getLogger(QueryRow.class).error(ex.toString());
         }
     }
