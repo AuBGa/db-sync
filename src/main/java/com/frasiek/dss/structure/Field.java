@@ -5,7 +5,9 @@
  */
 package com.frasiek.dss.structure;
 
+import com.frasiek.dss.connection.Direct;
 import java.util.Objects;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -54,24 +56,31 @@ public class Field {
         }
         final Field other = (Field) obj;
         if (!Objects.equals(this.name, other.name)) {
+            LoggerFactory.getLogger(Field.class).error("this.name != other.name: "+this.name+" != "+other.name);
             return false;
         }
         if (!Objects.equals(this.nullable, other.nullable)) {
+            LoggerFactory.getLogger(Field.class).error("this.name != other.name: "+this.nullable+" != "+other.nullable);
             return false;
         }
         if (!Objects.equals(this.characters, other.characters)) {
+            LoggerFactory.getLogger(Field.class).error("this.name != other.name: "+this.characters+" != "+other.characters);
             return false;
         }
         if (!Objects.equals(this.collation, other.collation)) {
+            LoggerFactory.getLogger(Field.class).error("this.name != other.name: "+this.collation+" != "+other.collation);
             return false;
         }
         if (!Objects.equals(this.type, other.type)) {
+            LoggerFactory.getLogger(Field.class).error("this.name != other.name: "+this.type+" != "+other.type);
             return false;
         }
         if (!Objects.equals(this.extra, other.extra)) {
+            LoggerFactory.getLogger(Field.class).error("this.name != other.name: "+this.extra+" != "+other.extra);
             return false;
         }
         if (!Objects.equals(this.columnDefault, other.columnDefault)) {
+            LoggerFactory.getLogger(Field.class).error("this.name != other.name: "+this.columnDefault+" != "+other.columnDefault);
             return false;
         }
         return true;

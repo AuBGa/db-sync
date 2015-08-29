@@ -6,7 +6,6 @@
 package com.frasiek.dss.connection;
 
 import com.frasiek.dss.DBStructure;
-import com.frasiek.dss.DBStructureChanges;
 import com.frasiek.dss.structure.Database;
 import java.util.List;
 
@@ -19,8 +18,6 @@ public interface Connection {
     public Boolean isConnectionOK();
 
     public DBStructure getStructure(Database database);
-
-    public void setNewStructure(DBStructureChanges dbChanges);
 
     @Override
     public String toString();
