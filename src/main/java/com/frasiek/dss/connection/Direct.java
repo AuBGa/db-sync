@@ -6,7 +6,6 @@
 package com.frasiek.dss.connection;
 
 import com.frasiek.dss.DBStructure;
-import com.frasiek.dss.DBStructureChanges;
 import com.frasiek.dss.structure.Database;
 import com.frasiek.dss.structure.Index;
 import com.frasiek.dss.structure.Query;
@@ -19,8 +18,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -110,11 +107,6 @@ public class Direct implements Connection, Serializable {
             } catch (Exception ex) {
             }
         }
-    }
-
-    @Override
-    public void setNewStructure(DBStructureChanges dbChanges) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

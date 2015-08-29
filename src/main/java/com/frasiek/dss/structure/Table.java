@@ -8,6 +8,7 @@ package com.frasiek.dss.structure;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Objects;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -49,18 +50,23 @@ public class Table {
         }
         final Table other = (Table) obj;
         if (!Objects.equals(this.name, other.name)) {
+            LoggerFactory.getLogger(Table.class).error("this.name != other.name: "+this.name+" != "+other.name);
             return false;
         }
         if (!Objects.equals(this.engine, other.engine)) {
+            LoggerFactory.getLogger(Table.class).error("this.name != other.name: "+this.engine+" != "+other.engine);
             return false;
         }
         if (!Objects.equals(this.collation, other.collation)) {
+            LoggerFactory.getLogger(Table.class).error("this.name != other.name: "+this.collation+" != "+other.collation);
             return false;
         }
         if (!Objects.equals(this.fields, other.fields)) {
+            LoggerFactory.getLogger(Table.class).error("this.name != other.name: "+this.fields+" != "+other.fields);
             return false;
         }
         if (!Objects.equals(this.indexes, other.indexes)) {
+            LoggerFactory.getLogger(Table.class).error("this.name != other.name: "+this.indexes+" != "+other.indexes);
             return false;
         }
         return true;
