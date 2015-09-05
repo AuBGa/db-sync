@@ -137,7 +137,7 @@ class DatabaseSchemaSynchronizer {
     
 }
 
-header('Content-Type: text/html; charset=utf-8');
+header('Content-Type: text/json; charset=utf-8');
 if (!isset($_POST)) {
     $_POST = array();
 }

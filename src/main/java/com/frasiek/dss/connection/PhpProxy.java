@@ -1,7 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * @author Michał Fraś
  */
 package com.frasiek.dss.connection;
 
@@ -10,7 +8,7 @@ import com.frasiek.dss.Http;
 import com.frasiek.dss.structure.Database;
 import com.frasiek.dss.structure.Index;
 import com.frasiek.dss.structure.Query;
-import com.frasiek.dss.structure.QueryIterator;
+import com.frasiek.dss.structure.QueryResult;
 import com.frasiek.dss.structure.QueryRow;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -24,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author frasiek
+ * 
  */
 public class PhpProxy implements Connection, Serializable {
 
@@ -51,7 +49,7 @@ public class PhpProxy implements Connection, Serializable {
     public Boolean isConnectionOK() {
         try {
             JSONObject json = this.sendQuery("SHOW DATABASES;", true);
-            QueryIterator qi = new QueryIterator(json);
+            QueryResult qi = new QueryResult(json);
             return qi.iterator().hasNext();
         } catch (JSONException ex) {
             LoggerFactory.getLogger(Direct.class).error(ex.toString());
@@ -63,16 +61,16 @@ public class PhpProxy implements Connection, Serializable {
     public DBStructure getStructure(Database database) {
         try {
             JSONObject rs = this.sendQuery(Query.getTables(database.getName()));
-            QueryIterator qi = new QueryIterator(rs);
+            QueryResult qi = new QueryResult(rs);
 
             DBStructure structure = new DBStructure(database.getName(), Query.getTablesMap(qi));
             for (String table : structure.getTables().keySet()) {
                 rs = sendQuery(Query.getFields(database.getName(), table));
-                qi = new QueryIterator(rs);
+                qi = new QueryResult(rs);
                 structure.setField(table, Query.getFieldsMap(qi));
 
                 rs = sendQuery(Query.getIndexes(database.getName(), table));
-                qi = new QueryIterator(rs);
+                qi = new QueryResult(rs);
                 ArrayList<Index> indexes = Query.getIndexList(qi);
                 structure.getTable(table).setIndexes(indexes);
             }
@@ -88,7 +86,7 @@ public class PhpProxy implements Connection, Serializable {
         List<Database> databases = new ArrayList<>();
         try {
             JSONObject rs = this.sendQuery(Query.getDatabases());
-            QueryIterator qi = new QueryIterator(rs);
+            QueryResult qi = new QueryResult(rs);
             Iterator it = qi.iterator();
             while (it.hasNext()) {
                 QueryRow qr = (QueryRow) it.next();

@@ -1,7 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * @author Michał Fraś
  */
 package com.frasiek.dss;
 
@@ -19,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author frasiek
+ * 
  */
 public class Main extends javax.swing.JFrame {
     
@@ -398,7 +396,7 @@ public class Main extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void MainMenuInformationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MainMenuInformationActionPerformed
-        // TODO add your handling code here:
+        JOptionPane.showMessageDialog(this, "Database Schema Synchronizer.\nAutor Michał Fraś.\nAby rozpocząć proces synchronizacji dodaj połączenie do bazy danych, \nnastępnie wczytaj schematy baz. Po wczytaniu schematów można dokonać synchronizacji \nlub tylko wyświelić interesujący nas kod SQL niezbędny do ujednolicenia schematów.");
     }//GEN-LAST:event_MainMenuInformationActionPerformed
 
     private void QuitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_QuitActionPerformed

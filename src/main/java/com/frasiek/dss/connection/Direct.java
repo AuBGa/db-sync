@@ -1,7 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * @author Michał Fraś
  */
 package com.frasiek.dss.connection;
 
@@ -9,7 +7,7 @@ import com.frasiek.dss.DBStructure;
 import com.frasiek.dss.structure.Database;
 import com.frasiek.dss.structure.Index;
 import com.frasiek.dss.structure.Query;
-import com.frasiek.dss.structure.QueryIterator;
+import com.frasiek.dss.structure.QueryResult;
 import java.io.Serializable;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -22,7 +20,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author frasiek
+ * 
  */
 public class Direct implements Connection, Serializable {
 
@@ -83,16 +81,16 @@ public class Direct implements Connection, Serializable {
                 return null;
             }
             ResultSet rs = c.createStatement().executeQuery(Query.getTables(database.getName()));
-            QueryIterator qi = new QueryIterator(rs);
+            QueryResult qi = new QueryResult(rs);
 
             DBStructure structure = new DBStructure(database.getName(), Query.getTablesMap(qi));
             for (String table : structure.getTables().keySet()) {
                 rs = c.createStatement().executeQuery(Query.getFields(database.getName(), table));
-                qi = new QueryIterator(rs);
+                qi = new QueryResult(rs);
                 structure.setField(table, Query.getFieldsMap(qi));
 
                 rs = c.createStatement().executeQuery(Query.getIndexes(database.getName(), table));
-                qi = new QueryIterator(rs);
+                qi = new QueryResult(rs);
                 ArrayList<Index> indexes = Query.getIndexList(qi);
                 structure.getTable(table).setIndexes(indexes);
             }
