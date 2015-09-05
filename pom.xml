@@ -19,7 +19,9 @@
         <dependency>
             <groupId>maven</groupId>
             <artifactId>maven-jar-plugin</artifactId>
-            <version>1.8.1</version>
+            <version>1.8.1.javadoc</version>
+            <scope>test</scope>
+            <type>javadoc.jar</type>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
@@ -43,20 +45,28 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
-    <build>
+   <build>
     <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>2.4</version>
-          <configuration>
-              <archive>
-                  <manifest>
-                      <mainClass>com.frasiek.dss.Main</mainClass>
-                  </manifest>
-              </archive>
-          </configuration>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.2</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>com.frasiek.dss.Main</mainClass>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
-  </plugins>
-</build>
+    </plugins>
+  </build>
 </project>
