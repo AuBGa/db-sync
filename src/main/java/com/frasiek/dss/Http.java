@@ -15,9 +15,26 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLPeerUnverifiedException;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
+import java.io.*;
+
 /**
  *
- * 
+ *
  */
 public class Http {
 
@@ -28,7 +45,7 @@ public class Http {
                 paramsStr += "&" + key + "=" + URLEncoder.encode(params.get(key).toString(), "UTF-8");
             }
             paramsStr = paramsStr.substring(1);
-            if(url.startsWith("https://")){
+            if (url.startsWith("https://")) {
                 return Http.sendHttpsPost(url, paramsStr);
             } else {
                 return Http.sendHttpPost(url, paramsStr);
@@ -74,6 +91,13 @@ public class Http {
     }
 
     private static String sendHttpsPost(String url, String urlParameters) throws Exception {
+        SSLContext ssl_ctx = SSLContext.getInstance("TLS");
+        TrustManager[] trust_mgr = get_trust_mgr();
+        ssl_ctx.init(null, // key manager
+                trust_mgr, // trust manager
+                new SecureRandom()); // random number generator
+        HttpsURLConnection.setDefaultSSLSocketFactory(ssl_ctx.getSocketFactory());
+
         URL obj = new URL(url);
         HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
 
@@ -104,4 +128,22 @@ public class Http {
 
         return response.toString();
     }
+
+    private static TrustManager[] get_trust_mgr() {
+        TrustManager[] certs = new TrustManager[]{
+            new X509TrustManager() {
+                public X509Certificate[] getAcceptedIssuers() {
+                    return null;
+                }
+
+                public void checkClientTrusted(X509Certificate[] certs, String t) {
+                }
+
+                public void checkServerTrusted(X509Certificate[] certs, String t) {
+                }
+            }
+        };
+        return certs;
+    }
+
 }
